@@ -1,5 +1,8 @@
 ﻿// ClickToMove.cs
 using UnityEngine;
+using UnityEngine.UI;
+using System.Collections;
+using UnityEngine.SceneManagement;
 
 [RequireComponent (typeof (NavMeshAgent))]
 public class MoveEthan : MonoBehaviour {
@@ -12,7 +15,7 @@ public class MoveEthan : MonoBehaviour {
 		agent = GetComponent<NavMeshAgent> ();
 	}
 	void Update () {
-		
+
 		float x = transform.position.x;
 		float y = transform.position.y;
 		float z = transform.position.z;
@@ -30,10 +33,10 @@ public class MoveEthan : MonoBehaviour {
 						agent.destination = new Vector3 (x + (agent.radius*speedDiff), y, z + (agent.radius*speedDiff));
 			} else {
 				//agent.destination = new Vector3 (x+mainCamera.transform.forward.x, y, z + (agent.radius*speedDiff)+mainCamera.transform.forward.z);
-				agent.destination = new Vector3 (x+mainCamera, y, z + (agent.radius*speedDiff));
+				agent.destination = new Vector3 (x, y, z + (agent.radius*speedDiff));
 
 			}
-		} 
+		}
 
 		else if (Input.GetKey (KeyCode.DownArrow)) {
 			if (Input.GetKey (KeyCode.LeftArrow)) {
@@ -44,7 +47,7 @@ public class MoveEthan : MonoBehaviour {
 			} else {
 				agent.destination = new Vector3 (x, y, z - (agent.radius*speedDiff));
 			}
-		} 
+		}
 
 		else if (Input.GetKey (KeyCode.LeftArrow)) {
 			if (Input.GetKey (KeyCode.UpArrow)) {
@@ -55,7 +58,7 @@ public class MoveEthan : MonoBehaviour {
 			} else {
 				agent.destination = new Vector3 (x - (agent.radius*speedDiff), y, z);
 			}
-		} 
+		}
 
 		else if (Input.GetKey (KeyCode.RightArrow)) {
 			if (Input.GetKey (KeyCode.UpArrow)) {
@@ -66,9 +69,21 @@ public class MoveEthan : MonoBehaviour {
 			} else {
 				agent.destination = new Vector3 (x + (agent.radius*speedDiff), y, z);
 			}
-		} 
+		}
 		else {
 			agent.destination = transform.position;
 		}
+	}
+
+	void OnCollisionEnter(Collider other)
+	{
+			//get powered up for 10 seconds
+			if (other.gameObject.CompareTag("Power Up"))
+			{
+					other.gameObject.SetActive(false);
+					speedDiff = 15.0F;
+					yield return new WaitForSeconds(10f);
+					speedDiff = 5.0F;
+			}
 	}
 }
